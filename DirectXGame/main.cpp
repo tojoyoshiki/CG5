@@ -6,29 +6,6 @@
 
 using namespace KamataEngine;
 
-// 関数宣言
-//ID3DBlob* CompileShader(const std::wstring& filePath, const std::string& shaderModel) {
-	//ID3DBlob* shaderBlob = nullptr;
-	//ID3DBlob* errorBlob = nullptr;
-
-	//HRESULT hr = D3DCompileFromFile(
-	//    filePath.c_str(), nullptr,
-	//    D3D_COMPILE_STANDARD_FILE_INCLUDE,               // インクルード可能にする
-	//    "main", shaderModel.c_str(),                     // エントリーポイント名、シェーダーモデル指定
-	//    D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-	//    0, &shaderBlob, &errorBlob);
-	//// エラー発生時に停止させる
-	//if (FAILED(hr)) {
-	//	if (errorBlob) {
-	//		OutputDebugStringA(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
-	//		errorBlob->Release();
-	//	}
-	//	assert(false);
-	//}
-	////生成したshaderBlobを返す
-	//return shaderBlob;
-//}
-
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
