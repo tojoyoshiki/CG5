@@ -1,8 +1,10 @@
 #pragma once
+
 #include <d3d12.h>
 #include <d3dcompiler.h> // dxcapi が依存している
 #include <dxcapi.h>      // IDxcBlob を使うため
 #include <string>
+
 #pragma comment(lib, "dxcompiler.lib")
 
 class Shader {
