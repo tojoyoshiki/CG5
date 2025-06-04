@@ -42,8 +42,10 @@ void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader&
 	graphicsPipelineStateDesc.pRootSignature = rs.Get();
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
 
-	graphicsPipelineStateDesc.VS = {vs.GetDxcBlob()->GetBufferPointer(), vs.GetDxcBlob()->GetBufferSize()}; // VertexShader
-	graphicsPipelineStateDesc.PS = {ps.GetDxcBlob()->GetBufferPointer(), ps.GetDxcBlob()->GetBufferSize()}; // PixelShader
+	graphicsPipelineStateDesc.VS = {vs.GetDxcBlob()->GetBufferPointer(),
+		vs.GetDxcBlob()->GetBufferSize()}; // VertexShader
+	graphicsPipelineStateDesc.PS = {ps.GetDxcBlob()->GetBufferPointer(),
+		ps.GetDxcBlob()->GetBufferSize()}; // PixelShader
 
 	graphicsPipelineStateDesc.BlendState = blendDesc;           // BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizrerState

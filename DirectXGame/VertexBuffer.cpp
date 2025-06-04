@@ -68,5 +68,5 @@ void VertexBuffer::Create(const UINT size, const UINT stride) {
 	vertexBufferView.StrideInBytes = stride;
 
 	// 生成したリソースを取っておく
-	vertexBuffer_ = vertexResource;
+	vertexBufferView_ = vertexBufferView;
 }

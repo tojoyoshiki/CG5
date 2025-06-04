@@ -3,7 +3,7 @@
 
 using namespace KamataEngine;
 
-	// 生成したRootSignatureを返す
+// 生成したRootSignatureを返す
 ID3D12RootSignature* RootSignature::Get() { return rootSignature_; }
 
 //コンストラクタ
