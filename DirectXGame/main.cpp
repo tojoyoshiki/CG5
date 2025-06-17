@@ -2,6 +2,7 @@
 #include "PipelineState.h"
 #include "RootSignature.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include "Shader.h"
 #include <Windows.h>
 #include <d3dcompiler.h>
@@ -97,18 +98,57 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	PipelineState pipelineState;
 	SetupPipelineState(pipelineState, rs, vs, ps);
 
+	struct VertexData {
+		Vector4 position;
+	};
+
+	//頂点データの準備
+	VertexData vertices[] = {
+	    {0.0f,  0.5f,  0.0f, 1.0f},
+	    {0.5f,  -0.5f, 0.0f, 1.0f},
+	    {-0.5f, -0.5f, 0.0f, 1.0f},
+	};
+
 	// VertexResourceの生成
 	VertexBuffer vb;
-	vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
+	//vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
+	vb.Create(sizeof(vertices), sizeof(vertices[0]));
 
-	// 頂点リソースにデータを書き込む
-	Vector4* vertexData = nullptr;
-	vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	vertexData[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // 左下
-	vertexData[1] = {0.0f, 0.5f, 0.0f, 1.0f};   // 上
-	vertexData[2] = {0.5f, -0.5f, 0.0f, 1.0f};  // 右下
-	// 頂点リソースのマップを描画する
-	vb.Get()->Unmap(0, nullptr);
+	//頂点リソースにデータを書き込む
+	VertexData* pGpuVertices = nullptr;
+	vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuVertices));
+
+	for (int i = 0; i < _countof(vertices); ++i) {
+		pGpuVertices[i] = vertices[i];
+	}
+
+	//頂点インデックスデータの準備
+	uint16_t indices[] = {
+	    0,
+	    1,
+	    2,
+	};
+
+	//indexbufferの生成
+	IndexBuffer ib;
+	ib.Create(sizeof(indices), sizeof(indices[0]));
+
+	//頂点インデックスリソースにデータを書き込む
+	uint16_t* pGpuIndices = nullptr;
+	ib.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuIndices));
+
+	for (int i = 0; i < _countof(indices); ++i) {
+		pGpuIndices[i] = indices[i];
+	}
+
+	//// 頂点リソースにデータを書き込む
+	//Vector4* vertexData = nullptr;
+	//vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	//vertexData[0] = {-0.5f, -0.5f, 0.0f, 1.0f}; // 左下
+	//vertexData[1] = {0.0f, 0.5f, 0.0f, 1.0f};   // 上
+	//vertexData[2] = {0.5f, -0.5f, 0.0f, 1.0f};  // 右下
+	//// 頂点リソースのマップを描画する
+	//vb.Get()->Unmap(0, nullptr);
 
 	// メインループ
 	while (true) {
@@ -125,10 +165,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		commandList->SetGraphicsRootSignature(rs.Get());          // rootsignatureの設定
 		commandList->SetPipelineState(pipelineState.Get());       // psoの設定
 		commandList->IASetVertexBuffers(0, 1, vb.GetView()); // vbvの設定をする
+		//入れる
+		commandList->IASetIndexBuffer(ib.GetView());
 		// トポロジーの設定
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 調点数、インデックス数、インデックスの開始位置、インデックスのオフセット
-		commandList->DrawInstanced(3, 1, 0, 0);
+		//commandList->DrawInstanced(3, 1, 0, 0);
+		commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 		// ↑
 		// 描画終了
