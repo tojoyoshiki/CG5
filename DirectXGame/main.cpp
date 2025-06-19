@@ -1,9 +1,9 @@
+#include "IndexBuffer.h"
 #include "KamataEngine.h"
 #include "PipelineState.h"
 #include "RootSignature.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
 #include "Shader.h"
+#include "VertexBuffer.h"
 #include <Windows.h>
 #include <d3dcompiler.h>
 #include <system_error>
@@ -43,10 +43,8 @@ void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader&
 	graphicsPipelineStateDesc.pRootSignature = rs.Get();
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
 
-	graphicsPipelineStateDesc.VS = {vs.GetDxcBlob()->GetBufferPointer(),
-		vs.GetDxcBlob()->GetBufferSize()}; // VertexShader
-	graphicsPipelineStateDesc.PS = {ps.GetDxcBlob()->GetBufferPointer(),
-		ps.GetDxcBlob()->GetBufferSize()}; // PixelShader
+	graphicsPipelineStateDesc.VS = {vs.GetDxcBlob()->GetBufferPointer(), vs.GetDxcBlob()->GetBufferSize()}; // VertexShader
+	graphicsPipelineStateDesc.PS = {ps.GetDxcBlob()->GetBufferPointer(), ps.GetDxcBlob()->GetBufferSize()}; // PixelShader
 
 	graphicsPipelineStateDesc.BlendState = blendDesc;           // BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizrerState
@@ -54,13 +52,13 @@ void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader&
 	// 書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1; // 一つのRTVに書き込む(２つ同時も可能)
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	//利用するトポロジ(形状)のタイプ。三角形
+	// 利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	//どのように画面に色を打ち込むかの設定
+	// どのように画面に色を打ち込むかの設定
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	//準備完了。PSO生成
+	// 準備完了。PSO生成
 	pipelineState.Create(graphicsPipelineStateDesc);
 }
 
@@ -102,8 +100,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		Vector4 position;
 	};
 
-	//頂点データの準備
+	// 頂点データの準備
 	VertexData vertices[] = {
+	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 左下
+	    {-1.0f, 3.0f,  0.0f, 1.0f}, // 左上の外
+	    {3.0f,  -1.0f, 0.0f, 1.0f}, // 右下の外
+
 	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 左下
 	    {-1.0f, 3.0f,  0.0f, 1.0f}, // 左上の外
 	    {3.0f,  -1.0f, 0.0f, 1.0f}, // 右下の外
@@ -111,10 +113,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// VertexResourceの生成
 	VertexBuffer vb;
-	//vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
+	// vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
 	vb.Create(sizeof(vertices), sizeof(vertices[0]));
 
-	//頂点リソースにデータを書き込む
+	// 頂点リソースにデータを書き込む
 	VertexData* pGpuVertices = nullptr;
 	vb.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuVertices));
 
@@ -122,17 +124,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		pGpuVertices[i] = vertices[i];
 	}
 
-	//頂点インデックスデータの準備
+	// 頂点インデックスデータの準備
 	uint16_t indices[] = {
 	    0, 1, 2, // 1枚目の三角形（左上 → 右上 → 右下）
 	    0, 2, 3  // 2枚目の三角形（左上 → 右下 → 左下）
 	};
 
-	//indexbufferの生成
+	// indexbufferの生成
 	IndexBuffer ib;
 	ib.Create(sizeof(indices), sizeof(indices[0]));
 
-	//頂点インデックスリソースにデータを書き込む
+	// 頂点インデックスリソースにデータを書き込む
 	uint16_t* pGpuIndices = nullptr;
 	ib.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pGpuIndices));
 
@@ -152,15 +154,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// ↓
 
 		// コマンドを積む
-		commandList->SetGraphicsRootSignature(rs.Get());          // rootsignatureの設定
-		commandList->SetPipelineState(pipelineState.Get());       // psoの設定
+		commandList->SetGraphicsRootSignature(rs.Get());     // rootsignatureの設定
+		commandList->SetPipelineState(pipelineState.Get());  // psoの設定
 		commandList->IASetVertexBuffers(0, 1, vb.GetView()); // vbvの設定をする
-		//入れる
+		// 入れる
 		commandList->IASetIndexBuffer(ib.GetView());
 		// トポロジーの設定
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 調点数、インデックス数、インデックスの開始位置、インデックスのオフセット
-		//commandList->DrawInstanced(3, 1, 0, 0);
+		// commandList->DrawInstanced(3, 1, 0, 0);
 		commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 		// ↑
