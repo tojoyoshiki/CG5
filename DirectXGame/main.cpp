@@ -100,16 +100,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		Vector4 position;
 	};
 
-	// 頂点データの準備
+    //頂点配列（3つでOK）
 	VertexData vertices[] = {
-	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 左下
-	    {-1.0f, 3.0f,  0.0f, 1.0f}, // 左上の外
-	    {3.0f,  -1.0f, 0.0f, 1.0f}, // 右下の外
-
-	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 左下
-	    {-1.0f, 3.0f,  0.0f, 1.0f}, // 左上の外
-	    {3.0f,  -1.0f, 0.0f, 1.0f}, // 右下の外
+	    {-1.0f, -1.0f, 0.0f, 1.0f}, // 0
+	    {-1.0f, 3.0f,  0.0f, 1.0f}, // 1
+	    {3.0f,  -1.0f, 0.0f, 1.0f}, // 2
 	};
+
+	// インデックス（1三角形）
+	uint16_t indices[] = {0, 1, 2};
 
 	// VertexResourceの生成
 	VertexBuffer vb;
@@ -123,12 +122,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	for (int i = 0; i < _countof(vertices); ++i) {
 		pGpuVertices[i] = vertices[i];
 	}
-
-	// 頂点インデックスデータの準備
-	uint16_t indices[] = {
-	    0, 1, 2, // 1枚目の三角形（左上 → 右上 → 右下）
-	    0, 2, 3  // 2枚目の三角形（左上 → 右下 → 左下）
-	};
 
 	// indexbufferの生成
 	IndexBuffer ib;
