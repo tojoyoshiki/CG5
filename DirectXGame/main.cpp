@@ -107,14 +107,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 頂点配列（3つでOK）
 	VertexData vertices[] = {
-	    {-1.0f, -1.0f, 0.0f, 1.0f, {0.0f, 0.0f}}, // 0
-	    {-1.0f, 3.0f,  0.0f, 1.0f, {1.0f, 0.0f}}, // 1
-	    {3.0f,  -1.0f, 0.0f, 1.0f, {1.0f, 1.0f}}, // 2
+	    {-1.0f, 1.0f,  0.0f, 1.0f, {0.0f, 0.0f}}, // 左上
+	    {1.0f,  1.0f,  0.0f, 1.0f, {1.0f, 0.0f}}, // 右上
+	    {-1.0f, -1.0f, 0.0f, 1.0f, {0.0f, 1.0f}}, // 左下
+	    {1.0f,  -1.0f, 0.0f, 1.0f, {1.0f, 1.0f}}, // 右下
 	};
 
 	// インデックス（1三角形）
-	uint16_t indices[] = {0, 1, 2};
-
+	uint16_t indices[] = {
+	    0, 1, 2, // 1枚目の三角形
+	    2, 1, 3  // 2枚目の三角形
+	};
 	// VertexResourceの生成
 	VertexBuffer vb;
 	// vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
