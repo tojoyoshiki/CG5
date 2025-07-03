@@ -1,6 +1,6 @@
 #include "Test.hlsli"
 
-Texture2D<float32_t> gTexture : register(t0);
+Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 struct PixelShaderOutput
@@ -11,11 +11,11 @@ struct PixelShaderOutput
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    
-    float32_t2 uv = input.texcoord.xy;
+    float32_t2 uv = input.texcoord.xy;    
+
     float32_t4 textureColor = gTexture.Sample(gSampler, uv);
     
-    output.color = 1 - textureColor;
+    output.color = textureColor;
     
     return output;
 }

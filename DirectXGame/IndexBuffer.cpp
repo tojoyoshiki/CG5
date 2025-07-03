@@ -74,5 +74,4 @@ void IndexBuffer::Create(const UINT size, const UINT stride) {
 	//IndexBufferViewを取っておく
 	indexBufferView_ = indexBufferView;
 
-	
 }
