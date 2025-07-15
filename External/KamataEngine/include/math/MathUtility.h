@@ -83,6 +83,8 @@ Matrix4x4 MakeRotateZMatrix(float angle);
 Matrix4x4 MakeTranslateMatrix(const Vector2& translate);
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
+Matrix4x4 TransferMatrix();
+
 // ビュー行列の作成
 Matrix4x4 Matrix4LookAtLH(const Vector3& eye, const Vector3& target, const Vector3& up);
 // 並行投影行列の作成
